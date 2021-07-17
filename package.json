@@ -1,0 +1,28 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon ./src/index.js",
+    "start": "concurrently \"cd ./todo-list && npm run start\" \"npm run server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UDecan/ToDo-list.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UDecan/ToDo-list/issues"
+  },
+  "homepage": "https://github.com/UDecan/ToDo-list#readme",
+  "dependencies": {
+    "concurrently": "^6.2.0",
+    "express": "^4.17.1",
+    "knex": "^0.95.7",
+    "nodemon": "^2.0.12",
+    "pg": "^8.6.0"
+  }
+}

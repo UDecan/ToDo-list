@@ -12,10 +12,12 @@ import "./authorize.scss";
 export default function Authorize(props) {
   return (
     <div className="blackShadow auth_div">
+
       <Typography className="auth_title" variant="h5" color="primary">
         Вход в систему
       </Typography>
-      <FormControl>
+
+      <FormControl fullWidth={true} margin="dense">
         <InputLabel htmlFor="user_name">Логин</InputLabel>
         <Input
           className="form_control"
@@ -25,7 +27,7 @@ export default function Authorize(props) {
         />
       </FormControl>
 
-      <FormControl>
+      <FormControl fullWidth={true} margin="dense">
         <InputLabel htmlFor="user_password">Пароль</InputLabel>
         <Input
           className="form_control"
@@ -34,9 +36,18 @@ export default function Authorize(props) {
           placeholder="Ваш пароль"
         />
       </FormControl>
-      <Button variant="contained" color="primary">
-        Войти
-      </Button>
+
+      <div className="buttons">
+        <Button variant="contained" color="primary" fullWidth={true}>
+          Войти
+        </Button>
+      </div>
+      <div className="buttons">
+        <Button fullWidth={true}>
+          Регистрация
+        </Button>
+      </div>
+
     </div>
   );
 }

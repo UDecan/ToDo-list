@@ -1,8 +1,8 @@
 .auth_div {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-flow: column nowrap;
+  flex-direction: column;
   border-radius: 10px;
   background-color: white;
 }

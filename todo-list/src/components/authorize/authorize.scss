@@ -1,0 +1,18 @@
+.auth_div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: column nowrap;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.blackShadow {
+  box-shadow: 0px 0px 30px gray;
+  transition: 0.2s ease;
+}
+
+.redShadow {
+  box-shadow: 0px 0px 30px crimson;
+  transition: 0.2s ease;
+}

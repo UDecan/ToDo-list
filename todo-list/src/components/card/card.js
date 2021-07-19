@@ -12,30 +12,9 @@ import TextModal from "../textmodal/textmodal";
 
 import "./card.scss";
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
-
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
 function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+  const top = 50;
+  const left = 50;
 
   return {
     top: `${top}%`,
@@ -44,22 +23,9 @@ function getModalStyle() {
   };
 }
 
-const useStylesModal = makeStyles((theme) => ({
-  paper: {
-    position: 'absolute',
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}));
-
 export default function OneCard(props) {
-  const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
+  const bull = <span className="bulletCard">•</span>;
 
-  const modalClasses = useStylesModal();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
@@ -72,8 +38,8 @@ export default function OneCard(props) {
     setOpen(false);
   };
 
-  const body = (
-    <div style={modalStyle} className={modalClasses.paper}>
+  const modalBody = (
+    <div style={modalStyle} className="paperModal">
       <h2 id="simple-modal-title">Text in a modal</h2>
       <p id="simple-modal-description">
         Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
@@ -84,10 +50,10 @@ export default function OneCard(props) {
 
   return (
     <div className="cardsLocation">
-      <Card className={classes.root}>
+      <Card className="rootCard">
         <CardContent>
 
-          <Typography className={classes.title} color="textSecondary" gutterBottom>
+          <Typography className="titleCard" color="textSecondary" gutterBottom>
             Word of the Day
           </Typography>
 
@@ -95,7 +61,7 @@ export default function OneCard(props) {
             be{bull}nev{bull}o{bull}lent
           </Typography>
 
-          <Typography className={classes.pos} color="textSecondary">
+          <Typography className="posCard" color="textSecondary">
             adjective
           </Typography>
 
@@ -115,7 +81,7 @@ export default function OneCard(props) {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
           >
-            {body}
+            {modalBody}
           </Modal>
         </CardActions>
 

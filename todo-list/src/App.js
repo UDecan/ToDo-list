@@ -5,7 +5,6 @@ import Home from './pages/home/home';
 import Lk from './pages/lk/lk';
 import Tasks from './pages/tasks/tasks';
 import './App.scss';
-import { Router } from '@material-ui/icons';
 
 function App() {
   return (

@@ -1,17 +1,11 @@
 import React from "react";
 import {
-  Button,
-  Typography,
-  CardContent,
-  Card,
-  CardActions,
-  makeStyles,
-  Modal
+  Typography
 } from "@material-ui/core";
 
-import "./textmodal.scss";
+import "./taskModal.scss";
 
-export default function TextModal(props) {
+export default function TaskModal(props) {
   return (
     <div>
       <Typography>

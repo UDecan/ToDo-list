@@ -5,10 +5,9 @@ import {
   CardContent,
   Card,
   CardActions,
-  makeStyles,
   Modal
 } from "@material-ui/core";
-import TextModal from "../textmodal/textmodal";
+import TaskModal from "../taskModal/taskModal";
 
 import "./card.scss";
 
@@ -44,7 +43,7 @@ export default function OneCard(props) {
       <p id="simple-modal-description">
         Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
       </p>
-      <TextModal />
+      <TaskModal />
     </div>
   );
 

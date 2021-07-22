@@ -3,40 +3,64 @@ import {
   Button,
   AppBar,
   Toolbar,
-  makeStyles,
   Typography,
-  IconButton
+  IconButton,
+  ListItemText,
+  List,
+  ListItem,
+  Drawer,
 } from "@material-ui/core";
 import { AccountCircle } from '@material-ui/icons';
 import OneCard from "../../components/card/card";
 
 import "./tasks.scss"
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
-
 export default function Tasks(props) {
-  const classes = useStyles();
+  const [state, setState] = React.useState({
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <div
+      className="rightPanel"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {['На день', 'На неделю', 'На месяц', 'На будущее', 'По дате обновления', 'По ответственным'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
   return (
     <div>
       <AppBar position="static">
         <Toolbar>
 
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className="titlePage">
             Задачи
           </Typography>
 
-          <Button color="inherit" href="/tasks">Задачи</Button>
+          {['right'].map((anchor) => (
+            <React.Fragment key={anchor}>
+              <Button color="inherit" onClick={toggleDrawer(anchor, true)}>Фильтры</Button>
+              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                {list(anchor)}
+              </Drawer>
+            </React.Fragment>
+          ))}
 
           <IconButton
             aria-label="account of current user"
@@ -50,7 +74,6 @@ export default function Tasks(props) {
 
         </Toolbar>
       </AppBar>
-
       <div className="cards">
         {
           [...Array(80)].map((_, index) => (<OneCard key={index} />))

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Input,
@@ -7,17 +7,37 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import { useHttp } from "../../hooks/httpHook";
 import "./authorize.scss";
 
 export default function Authorize(props) {
+  const { loading, error, request } = useHttp();
+  const [form, setForm] = useState({
+    user_name: '',
+    user_password: '',
+  });
+
+  const changeHandler = event => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+  }
+
+  const registerHandler = async () => {
+    try {
+      const data = await request('/api/authorize', 'POST', { ...form });
+      console.log("Data: ", data);
+    } catch (e) {
+
+    }
+  }
+
   return (
     <div className="centeryForm">
       <div className="blackShadow auth_div">
 
-        <Typography className="auth_title"
-          variant="h5"
-          color="primary"
-        >
+        <Typography variant="h5" color="primary" >
           Вход в систему
         </Typography>
 
@@ -27,7 +47,9 @@ export default function Authorize(props) {
             className="form_control"
             type="text"
             id="user_name"
+            name="user_name"
             placeholder="Ваш логин"
+            onChange={changeHandler}
           />
         </FormControl>
 
@@ -37,7 +59,9 @@ export default function Authorize(props) {
             className="form_control"
             type="password"
             id="user_password"
+            name="user_password"
             placeholder="Ваш пароль"
+            onChange={changeHandler}
           />
         </FormControl>
 
@@ -45,13 +69,17 @@ export default function Authorize(props) {
           <Button variant="contained"
             color="primary"
             fullWidth={true}
-            href="/home"
+            onChange={registerHandler}
+            disabled={loading}
           >
             Войти
           </Button>
         </div>
         <div className="buttons">
-          <Button fullWidth={true} href="/register">
+          <Button fullWidth={true}
+            href="/register"
+            disabled={loading}
+          >
             Регистрация
           </Button>
         </div>

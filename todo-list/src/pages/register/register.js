@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Input,
@@ -39,7 +39,7 @@ export default function Register(props) {
         </FormControl>
 
         <FormControl fullWidth={true} margin="dense">
-          <InputLabel htmlFor="user_name">Отчествое (необязательно)</InputLabel>
+          <InputLabel htmlFor="user_name">Отчество (необязательно)</InputLabel>
           <Input
             className="form_control"
             type="text"

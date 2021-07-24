@@ -2,10 +2,14 @@ const Router = require('express');
 const router = new Router();
 const taskController = require('../controllers/task_controller');
 
-router.post('/register', taskController.registerTask);
-router.post('/authorize', taskController.getTask);
-router.patch('/edit', taskController.editTask);
-router.delete('/user_annihilation', taskController.deleteTask);
+router.post('/newtask', taskController.newTask);
+router.get('/getalltask', taskController.getTask);
+router.get('/getdaytask', taskController.getTask);
+router.get('/getweektask', taskController.getTask);
+router.get('/getmonthtask', taskController.getTask);
+router.get('/getmoremonthtask', taskController.getTask);
+router.patch('/edittask', taskController.editTask);
+router.delete('/task_annihilation', taskController.deleteTask);
 
 
 

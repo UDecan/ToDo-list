@@ -1,15 +1,19 @@
+const express = require("express");
 const db = require('../db')
 
 class TaskController{
 
-  async registerTask(req, res) {
+  async newTask(req, res) {
     const { name, surname } = req.body;
     console.log(name, surname);
     res.json('ok');
   };
 
   async getTask(req, res) {
-    
+    const taskList = await db
+      .select('*')
+      .from('tasks');
+    res.status(200).json(taskList);
   }
 
   async editTask(req, res) {

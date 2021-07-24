@@ -11,23 +11,24 @@ import { useHttp } from "../../hooks/httpHook";
 import "./authorize.scss";
 
 export default function Authorize(props) {
-  const { loading, error, request } = useHttp();
+  const { loading, request } = useHttp();
   const [form, setForm] = useState({
-    user_name: '',
-    user_password: '',
+    login: '',
+    password: '',
   });
 
-  const changeHandler = event => {
+  const changeHandler = (e) => {
     setForm({
       ...form,
-      [event.target.name]: event.target.value
+      [e.target.id]: e.target.value,
     })
   }
 
   const registerHandler = async () => {
     try {
-      const data = await request('/api/authorize', 'POST', { ...form });
-      console.log("Data: ", data);
+      console.log('1');
+      const data = await request('/api/user/authorize', 'POST', { ...form });
+      console.log("Data: " + data);
     } catch (e) {
 
     }
@@ -42,24 +43,24 @@ export default function Authorize(props) {
         </Typography>
 
         <FormControl fullWidth={true} margin="dense">
-          <InputLabel htmlFor="user_name">Логин</InputLabel>
+          <InputLabel htmlFor="login">Логин</InputLabel>
           <Input
             className="form_control"
             type="text"
-            id="user_name"
-            name="user_name"
+            id="login"
+            name="login"
             placeholder="Ваш логин"
             onChange={changeHandler}
           />
         </FormControl>
 
         <FormControl fullWidth={true} margin="dense">
-          <InputLabel htmlFor="user_password">Пароль</InputLabel>
+          <InputLabel htmlFor="password">Пароль</InputLabel>
           <Input
             className="form_control"
             type="password"
-            id="user_password"
-            name="user_password"
+            id="password"
+            name="password"
             placeholder="Ваш пароль"
             onChange={changeHandler}
           />
@@ -69,12 +70,13 @@ export default function Authorize(props) {
           <Button variant="contained"
             color="primary"
             fullWidth={true}
-            onChange={registerHandler}
+            onClick={registerHandler}
             disabled={loading}
           >
             Войти
           </Button>
         </div>
+
         <div className="buttons">
           <Button fullWidth={true}
             href="/register"

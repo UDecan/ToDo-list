@@ -13,7 +13,7 @@ import {
 import { AccountCircle } from '@material-ui/icons';
 import OneCard from "../../components/card/card";
 
-import "./tasks.scss"
+import "./tasks.scss";
 
 export default function Tasks(props) {
   const [state, setState] = React.useState({

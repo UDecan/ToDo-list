@@ -1,21 +1,22 @@
-import { Redirect, Route, Switch } from 'react-router';
-import Authorize from './pages/authorize/authorize';
-import Register from './pages/register/register';
-import Lk from './pages/lk/lk';
-import Tasks from './pages/tasks/tasks';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { UserRoutes } from './routes';
+import { useAuth } from './hooks/authHook';
+import { AuthContext } from './context/AuthContext';
+
 import './App.scss';
 
 function App() {
+  const { token, login, logout, userLogin } = useAuth();
+  const isAuthenticated = !!token;
+  
   return (
-    <div className="App">
-      <Switch>
-        <Route exact path='/authorize' component={Authorize} />
-        <Route exact path='/register' component={Register} />
-        <Route exact path='/lk' component={Lk} />
-        <Route exact path='/tasks' component={Tasks} />
-        <Redirect to='/authorize' />
-      </Switch>
-    </div>
+    <AuthContext.Provider value={{ token, login, logout, userLogin }}>
+      <Router>
+        <div className="App">
+          <UserRoutes isAuthenticated={isAuthenticated} />
+        </div>
+      </Router>
+    </AuthContext.Provider>
   );
 }
 

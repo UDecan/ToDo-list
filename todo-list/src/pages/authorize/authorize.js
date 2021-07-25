@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
   Input,
@@ -6,12 +6,14 @@ import {
   FormControl,
   Typography,
 } from "@material-ui/core";
-
 import { useHttp } from "../../hooks/httpHook";
+import { AuthContext } from "../../context/AuthContext";
+
 import "./authorize.scss";
 
 export default function Authorize(props) {
-  const { loading, request } = useHttp();
+  const auth = useContext(AuthContext);
+  const { loading, request, error, clearError } = useHttp();
   const [form, setForm] = useState({
     login: '',
     password: '',
@@ -24,11 +26,15 @@ export default function Authorize(props) {
     })
   }
 
-  const registerHandler = async () => {
+  /*useEffect(() => {
+    message(error);
+    clearError();
+  }, [error, message, clearError]);*/
+
+  const authorizeHandler = async () => {
     try {
-      console.log('1');
       const data = await request('/api/user/authorize', 'POST', { ...form });
-      console.log("Data: " + data);
+      auth.login(data.token, data.userLogin);
     } catch (e) {
 
     }
@@ -70,7 +76,7 @@ export default function Authorize(props) {
           <Button variant="contained"
             color="primary"
             fullWidth={true}
-            onClick={registerHandler}
+            onClick={authorizeHandler}
             disabled={loading}
           >
             Войти

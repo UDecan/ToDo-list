@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Button,
   AppBar,
@@ -16,7 +16,7 @@ import OneCard from "../../components/card/card";
 import "./tasks.scss";
 
 export default function Tasks(props) {
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     right: false,
   });
 
@@ -35,7 +35,7 @@ export default function Tasks(props) {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {['На день', 'На неделю', 'На месяц', 'На будущее', 'По дате обновления', 'По ответственным'].map((text, index) => (
+        {['На день', 'На неделю', 'На месяц', 'На будущее', 'По дате обновления', 'По ответственным'].map((text) => (
           <ListItem button key={text}>
             <ListItemText primary={text} />
           </ListItem>

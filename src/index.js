@@ -7,6 +7,7 @@ const app = express();
 const PORT = config.get('port') || 5000;
 
 app.use(express.json());
+// /api/user/authorize
 app.use('/api', router);
 
 // app.get("*", (req, res) => {

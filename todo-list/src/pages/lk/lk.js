@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Button,
   AppBar,
@@ -8,11 +8,21 @@ import {
   TextField
 } from "@material-ui/core";
 import { AccountCircle } from '@material-ui/icons';
+import { AuthContext } from '../../context/AuthContext'
+import { useHistory } from "react-router";
 
 import "./lk.scss";
 
 
 export default function Lk(props) {
+  const history = useHistory();
+  const auth = useContext(AuthContext);
+  const logoutHadler = (e) => {
+    e.preventDefault();
+    auth.logout();
+    history.push('/authorize');
+  };
+
   return (
     <div className="body">
       <AppBar position="static">
@@ -23,7 +33,7 @@ export default function Lk(props) {
           </Typography>
 
           <Button color="inherit" href="/tasks">Задачи</Button>
-          <Button color="inherit" href="/authorize">Выйти</Button>
+          <Button color="inherit" href="/authorize" onClick={logoutHadler}>Выйти</Button>
 
           <IconButton
             aria-label="account of current user"

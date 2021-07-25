@@ -5,7 +5,6 @@ class TaskController{
 
   async newTask(req, res) {
     const { name, surname } = req.body;
-    console.log(name, surname);
     res.json('ok');
   };
 

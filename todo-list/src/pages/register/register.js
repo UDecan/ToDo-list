@@ -9,22 +9,40 @@ import {
 import validateLogin from '../../validators/login';
 import validatePassword from '../../validators/password';
 import AdditionalInfo from "../../additionalInfo/additionalInfo";
+import { useHttp } from "../../hooks/httpHook";
+
 
 import "./register.scss";
 
 export default function Register(props) {
+  const { loading, request } = useHttp();
   const [state, setState] = useState({
+    name: "",
+    surname: "",
+    lastname: "",
     login: "",
     password: "",
-    passwordConf: ""
+    passwordConf: "",
+    supervisor: ""
   });
 
+  const alertLogin = !validateLogin(state.login) && state.login !== "";
+  const alertPassword = !validatePassword(state.password) && state.password !== "";
+  const alertPasswordConf = state.password !== state.passwordConf && state.passwordConf !== "";
+
   const changeHandler = (e) => {
-    const target = e.target;
     setState({
       ...state,
-      [target.id]: target.value,
-    });
+      [e.target.id]: e.target.value,
+    })
+  }
+
+  const registerHandler = async () => {
+    try {
+      const data = await request('/api/user/register', 'POST', { ...state });
+    } catch (e) {
+
+    }
   }
 
   return (
@@ -36,17 +54,6 @@ export default function Register(props) {
         </Typography>
 
         <FormControl fullWidth={true} margin="dense">
-          <InputLabel htmlFor="name">Имя</InputLabel>
-          <Input
-            className="form_control"
-            type="text"
-            name="name"
-            id="name"
-            placeholder="Ваше имя"
-          />
-        </FormControl>
-
-        <FormControl fullWidth={true} margin="dense">
           <InputLabel htmlFor="surname">Фамилия</InputLabel>
           <Input
             className="form_control"
@@ -54,6 +61,19 @@ export default function Register(props) {
             name="surname"
             id="surname"
             placeholder="Ваша фамилия"
+            onChange={changeHandler}
+          />
+        </FormControl>
+
+        <FormControl fullWidth={true} margin="dense">
+          <InputLabel htmlFor="name">Имя</InputLabel>
+          <Input
+            className="form_control"
+            type="text"
+            name="name"
+            id="name"
+            placeholder="Ваше имя"
+            onChange={changeHandler}
           />
         </FormControl>
 
@@ -65,6 +85,7 @@ export default function Register(props) {
             name="lastname"
             id="lastname"
             placeholder="Ваше отчество"
+            onChange={changeHandler}
           />
         </FormControl>
 
@@ -80,7 +101,7 @@ export default function Register(props) {
           />
         </FormControl>
 
-        {!validateLogin(state.login) && !(state.login === "") ?
+        {alertLogin ?
           <AdditionalInfo type="hidden" text="Длина от 4 до 32 символов. Использовать только англ. буквы, цифры и '-' '_'." />
           : ''
         }
@@ -97,7 +118,7 @@ export default function Register(props) {
           />
         </FormControl>
 
-        {!validatePassword(state.password) && !(state.password === "") ?
+        {alertPassword ?
           <AdditionalInfo type="hidden" text="Длина от 4 до 32 символов. Должен включать как нижний, так и верхний регистр. Должен включать буквы и цифры. Использовать только англ. буквы." />
           : ''
         }
@@ -114,7 +135,7 @@ export default function Register(props) {
           />
         </FormControl>
 
-        {state.password !== state.passwordConf && !(state.passwordConf === "") ?
+        {alertPasswordConf ?
           <AdditionalInfo type="hidden" text="Пароли не совпадают" />
           : ''
         }
@@ -127,11 +148,18 @@ export default function Register(props) {
             name="supervisor"
             id="supervisor"
             placeholder="Логин руководителя"
+            onChange={changeHandler}
           />
         </FormControl>
 
         <div className="buttons">
-          <Button variant="contained" color="primary" fullWidth={true}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth={true}
+            onClick={registerHandler}
+            disabled={alertLogin || alertPassword || alertPasswordConf || state.name === "" || state.surname === ""}
+          >
             Зарегистрироваться
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   Button,
   AppBar,
@@ -10,10 +10,16 @@ import {
   ListItem,
   Drawer,
 } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 import { AccountCircle } from '@material-ui/icons';
 import OneCard from "../../components/card/card";
 
 import "./tasks.scss";
+
+const navLinkStyle = {
+  color: "white",
+  textDecoration: "none"
+}
 
 export default function Tasks(props) {
   const [state, setState] = useState({
@@ -62,15 +68,16 @@ export default function Tasks(props) {
             </React.Fragment>
           ))}
 
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            color="inherit"
-            href="/lk"
-          >
-            <AccountCircle />
-          </IconButton>
+          <NavLink to='/lk' style={navLinkStyle}>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </NavLink>
 
         </Toolbar>
       </AppBar>

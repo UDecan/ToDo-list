@@ -18,6 +18,21 @@ async function hashPassword(password) {
   return pwdHash;
 };
 
+async function getUserInfo(req, res) {
+  const { login } = req.user;
+
+  const candidate = (await db('user_data').where({ login }).select())[0];
+
+
+  if (!candidate) {
+    return res.status(500).json({
+      message: "Непредвиденная ошибка!"
+    });
+  }
+
+  res.status(200).json({ candidate });
+}
+
 async function registerUser(req, res) {
   const { name, surname, middle_name, login, password, leader } = req.body;
 
@@ -32,9 +47,7 @@ async function registerUser(req, res) {
     });
   }
 
-  const candidate = (await db('user_data').where({
-    login: `${login}`
-  }).select())[0];
+  const candidate = (await db('user_data').where({ login }).select())[0];
 
 
   if (candidate) {
@@ -97,38 +110,45 @@ async function authorizeUser(req, res) {
 };
 
 async function editUser(req, res) {
-  const { login, password, role } = req.body;
+  const { login } = req.user;
+  const { leader, name, surname, lastname } = req.body;
+  
+  const leaderLogin = (await db('user_data').where({ leader }).select())[0];
 
-  if (!!login && !validators.login(login)) {
+  if (!leaderLogin) {
     return res.status(500).json({
-      msg: "Неверный логин",
-    });
-  }
-  if (!!password && !validators.password(password)) {
-    return res.status(500).json({
-      msg: "Неверный пароль",
+      message: "Руководителя с таким логином не существует"
     });
   }
 
-  const candidate = (
-    await db.select().from("userdata").where({ login })
-  )[0];
+  const candidate = (await db('user_data').where({ login }).select())[0];
 
-  const [pwdHash] = !!password
-    ? await hashPassword(password)
-    : [candidate.password];
 
-  const responseData = await db("userdata")
-    .where({ id })
-    .update({
-      login: login || candidate.login,
-      password: pwdHash,
-      role: role || candidate.role,
+  if (!candidate) {
+    return res.status(500).json({
+      message: "Непредвиденная ошибка!"
     });
+  }
 
-  res.status(200).json({
-    msg: responseData,
-  });
+  try {
+    const responseData = await db("user_data")
+      .where({ login })
+      .update({
+        name,
+        surname,
+        lastname,
+        leader
+      });
+
+    res.status(200).json({
+      message: responseData,
+    });
+  }
+  catch {
+    return res.status(500).json({
+      message: "Непредвиденная ошибка!"
+    });
+  }
 };
 
 async function deleteUser(req, res) {
@@ -143,4 +163,4 @@ async function deleteUser(req, res) {
   });
 };
 
-module.exports = { registerUser, authorizeUser, editUser, deleteUser };
+module.exports = { registerUser, authorizeUser, editUser, deleteUser, getUserInfo };

@@ -6,6 +6,7 @@ import {
   FormControl,
   Typography,
 } from "@material-ui/core";
+import {NavLink} from "react-router-dom";
 import validateLogin from '../../validators/login';
 import validatePassword from '../../validators/password';
 import AdditionalInfo from "../../additionalInfo/additionalInfo";
@@ -13,6 +14,11 @@ import { useHttp } from "../../hooks/httpHook";
 
 
 import "./register.scss";
+
+const navLinkStyle = {
+  color: "white",
+  textDecoration: "none"
+}
 
 export default function Register(props) {
   const { loading, request } = useHttp();
@@ -23,7 +29,7 @@ export default function Register(props) {
     login: "",
     password: "",
     passwordConf: "",
-    supervisor: ""
+    leader: ""
   });
 
   const alertLogin = !validateLogin(state.login) && state.login !== "";
@@ -141,12 +147,12 @@ export default function Register(props) {
         }
 
         <FormControl fullWidth={true} margin="dense">
-          <InputLabel htmlFor="supervisor">Руководитель (необязательно)</InputLabel>
+          <InputLabel htmlFor="leader">Руководитель (необязательно)</InputLabel>
           <Input
             className="form_control"
             type="password"
-            name="supervisor"
-            id="supervisor"
+            name="leader"
+            id="leader"
             placeholder="Логин руководителя"
             onChange={changeHandler}
           />
@@ -164,9 +170,11 @@ export default function Register(props) {
           </Button>
         </div>
         <div className="buttons">
-          <Button fullWidth={true} href="/authorize">
-            Войти
-          </Button>
+          <NavLink to='/authorize' style={navLinkStyle}>
+            <Button fullWidth={true}>
+              Войти
+            </Button>
+          </NavLink>
         </div>
 
       </div>

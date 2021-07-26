@@ -6,10 +6,16 @@ import {
   FormControl,
   Typography,
 } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 import { useHttp } from "../../hooks/httpHook";
 import { AuthContext } from "../../context/AuthContext";
 
 import "./authorize.scss";
+
+const navLinkStyle = {
+  color: "white",
+  textDecoration: "none"
+}
 
 export default function Authorize(props) {
   const auth = useContext(AuthContext);
@@ -35,9 +41,7 @@ export default function Authorize(props) {
     try {
       const data = await request('/api/user/authorize', 'POST', { ...form });
       auth.login(data.token, data.userLogin);
-    } catch (e) {
-
-    }
+    } catch (e) { }
   }
 
   return (
@@ -84,12 +88,13 @@ export default function Authorize(props) {
         </div>
 
         <div className="buttons">
-          <Button fullWidth={true}
-            href="/register"
-            disabled={loading}
-          >
-            Регистрация
-          </Button>
+          <NavLink to='/register' style={navLinkStyle}>
+            <Button fullWidth={true}
+              disabled={loading}
+            >
+              Регистрация
+            </Button>
+          </NavLink>
         </div>
 
       </div>

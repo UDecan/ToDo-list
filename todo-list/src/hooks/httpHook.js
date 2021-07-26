@@ -9,7 +9,6 @@ export const useHttp = () => {
 
   const request = useCallback(async (url, method = 'GET', body = null, headers = { "Content-Type": 'application/json' }) => {
     setLoading(true);
-
     try {
       body = body ? JSON.stringify(body) : body;
 

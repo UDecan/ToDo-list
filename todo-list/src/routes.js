@@ -7,7 +7,6 @@ import { Redirect, Route, Switch } from 'react-router';
 
 
 export const UserRoutes = ({ isAuthenticated }) => {
-  console.log('1');
   if (isAuthenticated) {
     return (
       <Switch>

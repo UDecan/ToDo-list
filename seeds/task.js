@@ -23,6 +23,26 @@ exports.seed = async function (knex) {
       the_creator: "admin",
       responsible: "user",
     },
+    {
+      heading: "Задание 3",
+      description: "Очень подробное и не подробное описание",
+      expiration_date: "30.07.2021",
+      date_of_creation: "26.07.2021",
+      priority: "средний",
+      status: "к выполнению",
+      the_creator: "admin",
+      responsible: "user",
+    },
+    {
+      heading: "Задание 4",
+      description: "Очень подробное и не подробное описание",
+      expiration_date: "10.08.2021",
+      date_of_creation: "25.07.2021",
+      priority: "средний",
+      status: "к выполнению",
+      the_creator: "admin",
+      responsible: "user",
+    },
   ];
 
   // Deletes ALL existing entries

@@ -56,6 +56,15 @@ async function registerUser(req, res) {
     });
   }
 
+  const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
+
+
+  if (!!leader && !leaderLogin && leaderLogin.role !== 'admin') {
+    return res.status(500).json({
+      message: "Руководителя с таким логином не существует"
+    });
+  }
+
   const hashPwd = await hashPassword(password);
 
   const newUser = await db('user_data').insert({
@@ -111,11 +120,11 @@ async function authorizeUser(req, res) {
 
 async function editUser(req, res) {
   const { login } = req.user;
-  const { leader, name, surname, lastname } = req.body;
-  
-  const leaderLogin = (await db('user_data').where({ leader }).select())[0];
+  const { leader, name, surname, middle_name } = req.body;
 
-  if (!leaderLogin) {
+  const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
+
+  if (!!leader && !leaderLogin || leaderLogin.role !== 'admin') {
     return res.status(500).json({
       message: "Руководителя с таким логином не существует"
     });
@@ -136,7 +145,7 @@ async function editUser(req, res) {
       .update({
         name,
         surname,
-        lastname,
+        middle_name,
         leader
       });
 
@@ -151,7 +160,7 @@ async function editUser(req, res) {
   }
 };
 
-async function deleteUser(req, res) {
+async function deleteUser(req, res) { // ???
   const { login } = req.query;
 
   const candidate = await db("user_data")

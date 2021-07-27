@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Button,
   Typography,
@@ -23,11 +23,14 @@ function getModalStyle() {
 }
 
 export default function OneCard(props) {
-  const bull = <span className="bulletCard">•</span>;
-
   // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  const [state, setState] = useState({})
+
+
+  useEffect(() => { setState(props.task); }, []);
+
 
   const handleOpen = () => {
     setOpen(true);
@@ -39,41 +42,38 @@ export default function OneCard(props) {
 
   const modalBody = (
     <div style={modalStyle} className="paperModal">
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-      <TaskModal />
+      <TaskModal value={props.task} userRole={props.userRole} />
     </div>
   );
 
   return (
     <div className="cardsLocation">
       <Card className="rootCard">
-        <CardContent>
-
-          <Typography className="titleCard" color="textSecondary" gutterBottom>
-            Word of the Day
-          </Typography>
+        <CardContent className="MuiCard-root">
 
           <Typography variant="h5" component="h2">
-            be{bull}nev{bull}o{bull}lent
+            {props.task.heading}
           </Typography>
 
-          <Typography className="posCard" color="textSecondary">
-            adjective
+          <Typography variant="inherit" component="p">
+            Приоритет: {props.task.priority}
           </Typography>
 
-          <Typography variant="body2" component="p">
-            well meaning and kindly.
-            <br />
-            {'"a benevolent smile"'}
+          <Typography variant="inherit" component="p">
+            Дата окончания: {new Date(props.task.expiration_date).toLocaleString('ru-RU', { day: 'numeric', month: 'numeric', year: 'numeric' })}
           </Typography>
 
+          <Typography variant="inherit" component="p">
+            Ответственный: {props.task.responsible}
+          </Typography>
+
+          <Typography variant="inherit" component="p">
+            Статус: {props.task.status}
+          </Typography>
         </CardContent>
 
         <CardActions>
-          <Button size="small" onClick={handleOpen}>Learn More</Button>
+          <Button size="small" onClick={handleOpen}>Подробнее...</Button>
           <Modal
             open={open}
             onClose={handleClose}

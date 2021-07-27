@@ -24,7 +24,7 @@ export default function Lk(props) {
   const [state, setState] = useState({
     name: "",
     surname: "",
-    lastName: "",
+    middle_name: "",
     role: "",
     login: "",
     leader: ""
@@ -116,10 +116,10 @@ export default function Lk(props) {
           />
           <TextField
             label="Отчество"
-            value={state.lastName ? state.lastName : ""}
+            value={state.middle_name ? state.middle_name : ""}
             margin="dense"
             fullWidth={true}
-            id="lastName"
+            id="middle_name"
             onChange={changeHandler}
           />
           <TextField

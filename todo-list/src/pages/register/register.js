@@ -25,7 +25,7 @@ export default function Register(props) {
   const [state, setState] = useState({
     name: "",
     surname: "",
-    lastname: "",
+    middle_name: "",
     login: "",
     password: "",
     passwordConf: "",
@@ -84,12 +84,12 @@ export default function Register(props) {
         </FormControl>
 
         <FormControl fullWidth={true} margin="dense">
-          <InputLabel htmlFor="lastname">Отчество (необязательно)</InputLabel>
+          <InputLabel htmlFor="middle_name">Отчество (необязательно)</InputLabel>
           <Input
             className="form_control"
             type="text"
-            name="lastname"
-            id="lastname"
+            name="middle_name"
+            id="middle_name"
             placeholder="Ваше отчество"
             onChange={changeHandler}
           />

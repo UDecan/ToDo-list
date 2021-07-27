@@ -1,0 +1,60 @@
+.timePicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropDownList {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.textPosition {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  width: -webkit-fill-available;
+}
+
+.textPositionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textFiledPosition {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: -webkit-fill-available;
+}
+
+.tyMargin {
+  margin: 5px;
+}
+
+.txMargin {
+  margin-left: 5px;
+  width: -webkit-fill-available;
+}
+
+.priorityMargin {
+  margin-top: 10px;
+}
+
+.formSelect {
+  margin: 8px;
+  width: 300px;
+}
+
+.bttMurgin {
+  margin-top: 15px;
+}
+
+.MuiCard-root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}

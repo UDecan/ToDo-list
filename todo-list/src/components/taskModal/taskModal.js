@@ -1,5 +1,4 @@
-import React, { useContext, useState} from "react";
-import 'date-fns';
+import React, { useContext, useState, useEffect } from "react";
 import {
   Typography,
   MenuItem,
@@ -8,29 +7,31 @@ import {
   TextField,
   Button
 } from "@material-ui/core";
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
 import { useHttp } from "../../hooks/httpHook";
 import { AuthContext } from '../../context/AuthContext'
+import { NavLink } from "react-router-dom";
 
 import "./taskModal.scss";
 
+const navLinkStyle = {
+  color: "white",
+  textDecoration: "none"
+}
+
 export default function TaskModal(props) {
   const [state, setState] = useState({
-    heading: props.value.heading,
-    description: props.value.description,
-    expiration_date: props.value.expiration_date,
-    date_of_creation: props.value.date_of_creation,
-    update_date: props.value.update_date,
-    priority: props.value.priority,
-    status: props.value.status,
-    the_creator: props.value.the_creator,
-    responsible: props.value.responsible,
+    id: props.value?.id,
+    heading: props.value?.heading,
+    description: props.value?.description,
+    expiration_date: props.value?.expiration_date?.split("T")[0],
+    date_of_creation: props.value?.date_of_creation?.split("T")[0],
+    update_date: props.value?.update_date?.split("T")[0],
+    priority: props.value?.priority,
+    status: props.value?.status,
+    the_creator: props.value?.the_creator,
+    responsible: props.value?.responsible,
   });
+
   const { token } = useContext(AuthContext);
   const { request } = useHttp();
 
@@ -41,10 +42,32 @@ export default function TaskModal(props) {
     });
   };
 
+  const statusHandler = (e) => {
+    setState({
+      ...state,
+      status: e.target.value
+    });
+
+  };
+
+  const priorityHandler = (e) => {
+    setState({
+      ...state,
+      priority: e.target.value
+    });
+  };
+
   const saveChange = async (e) => {
-    const data = await request('/api/task/edittask', 'PATCH', { ...state },
-      { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+    if (props.flag === 'newTask') {
+      const data = await request('/api/task/newtask', 'POST', { ...state },
+        { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+    }
+    else {
+      const data = await request('/api/task/edittask', 'PATCH', { ...state },
+        { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+    }
   }
+
   return (
     <>
       <div className="textFiledPosition">
@@ -54,15 +77,18 @@ export default function TaskModal(props) {
           </Typography>
         </div>
 
-        <div className="txMargin">
-          <TextField
-            required
-            value={state.heading}
-            fullWidth={true}
-            id="heading"
-            onChange={handleChange}
-          />
-        </div>
+        <TextField
+          required
+          value={state.heading}
+          fullWidth={true}
+          multiline
+          rowsMax={4}
+          InputProps={{
+            readOnly: props.userRole === 'admin' ? false : true,
+          }}
+          id="heading"
+          onChange={handleChange}
+        />
       </div>
 
 
@@ -73,15 +99,18 @@ export default function TaskModal(props) {
           </Typography>
         </div>
 
-        <div className="txMargin">
-          <TextField
-            required
-            value={state.description}
-            fullWidth={true}
-            id="description"
-            onChange={handleChange}
-          />
-        </div>
+        <TextField
+          required
+          value={state.description}
+          fullWidth={true}
+          multiline
+          rowsMax={4}
+          InputProps={{
+            readOnly: props.userRole === 'admin' ? false : true,
+          }}
+          id="description"
+          onChange={handleChange}
+        />
       </div>
 
 
@@ -90,89 +119,83 @@ export default function TaskModal(props) {
           Дата окончания:
         </Typography>
 
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justifyContent="space-around">
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
-              margin="normal"
-              id="expiration_date"
-              value={props.value.expiration_date}
-              InputProps={{
-                readOnly: props.userRole === 'admin' ? true : false,
-              }}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-              onChange={handleChange}
-            />
-          </Grid>
-        </MuiPickersUtilsProvider>
+        <TextField
+          id="expiration_date"
+          type="date"
+          className="timeWith"
+          value={state.expiration_date}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            readOnly: props.userRole === 'admin' ? false : true,
+          }}
+          onChange={handleChange}
+        />
       </div>
 
 
-      <div className="timePicker">
-        <Typography>
-          Дата создания:
-        </Typography>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justifyContent="space-around">
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
-              margin="normal"
+
+
+      {props.flag === 'newTask' ? '' :
+        (
+          <div className="timePicker">
+            <Typography>
+              Дата создания:
+            </Typography>
+
+            <TextField
               id="date_of_creation"
-              value={props.value.date_of_creation}
-              InputProps={{
-                readOnly: props.userRole === 'admin' ? true : false,
+              type="date"
+              className="timeWith"
+              value={state.date_of_creation}
+              InputLabelProps={{
+                shrink: true,
               }}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
+              InputProps={{
+                readOnly: true,
               }}
               onChange={handleChange}
             />
-          </Grid>
-        </MuiPickersUtilsProvider>
-      </div>
+          </div>
+        )}
+
+      {props.flag === 'newTask' ? '' :
+        (
+          <div className="timePicker">
+            <Typography>
+              Дата обновления:
+            </Typography>
+
+            <TextField
+              id="update_date"
+              type="date"
+              className="timeWith"
+              value={state.update_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                readOnly: props.userRole === 'admin' ? false : true,
+              }}
+              onChange={handleChange}
+            />
+          </div>
+        )
+      }
+
 
       <div className="timePicker">
-        <Typography>
-          Дата обновления:
-        </Typography>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justifyContent="space-around">
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
-              margin="normal"
-              id="update_date"
-              value={props.value.update_date}
-              InputProps={{
-                readOnly: props.userRole === 'admin' ? true : false,
-              }}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-              onChange={handleChange}
-            />
-          </Grid>
-        </MuiPickersUtilsProvider>
-      </div>
-
-      <div className="dropDownList">
         <Typography className="priorityMargin">
           Приоритет:
         </Typography>
 
         <FormControl className="formSelect">
           <Select
-            labelId="demo-simple-select-label"
             id="priority"
             value={state.priority}
-            onChange={handleChange}
+            onChange={priorityHandler}
+            onOpen={props.userRole === 'admin' ? false : true}
           >
             <MenuItem value={"высокий"}>высокий</MenuItem>
             <MenuItem value={"средний"}>средний</MenuItem>
@@ -181,71 +204,82 @@ export default function TaskModal(props) {
         </FormControl>
       </div>
 
+      {props.flag === 'newTask' ? '' :
+        (
+          <div className="timePicker">
+            <Typography className="priorityMargin">
+              Статус:
+            </Typography>
 
-      <div className="dropDownList">
-        <Typography className="priorityMargin">
-          Статус:
-        </Typography>
+            <FormControl className="formSelect">
+              <Select
+                id="status"
+                value={state.status}
+                onChange={statusHandler}
+              >
+                <MenuItem value={"к выполнению"}>к выполнению</MenuItem>
+                <MenuItem value={"выполняется"}>выполняется</MenuItem>
+                <MenuItem value={"выполнена"}>выполнена</MenuItem>
+                <MenuItem value={"отменена"}>отменена</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        )
+      }
 
-        <FormControl className="formSelect">
-          <Select
-            labelId="demo-simple-select-label"
-            id="status"
-            value={state.status}
-            onChange={handleChange}
-          >
-            <MenuItem value={"к выполнению"}>к выполнению</MenuItem>
-            <MenuItem value={"выполняется"}>выполняется</MenuItem>
-            <MenuItem value={"выполнена"}>выполнена</MenuItem>
-            <MenuItem value={"отменена"}>отменена</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
+      {props.flag === 'newTask' ? '' : (
+        <div className="timePicker">
+          <div className="priorityMargin">
+            <Typography>
+              Создатель:
+            </Typography>
+          </div>
+
+          <div className="timeWith">
+            <TextField
+              required
+              value={state.the_creator}
+              fullWidth={true}
+              id="the_creator"
+              InputProps={{
+                readOnly: props.userRole === 'admin' ? false : true,
+              }}
+            />
+          </div>
+        </div>)
+      }
 
 
-
-      <div className="textFiledPosition">
-        <div className="priorityMargin">
-          <Typography>
-            Создатель:
-          </Typography>
-        </div>
-
-        <div className="txMargin">
-          <TextField
-            required
-            value={state.the_creator}
-            fullWidth={true}
-            id="the_creator"
-          />
-        </div>
-      </div>
-
-      <div className="textFiledPosition">
+      <div className="timePicker">
         <div className="priorityMargin">
           <Typography>
             Ответственный:
           </Typography>
         </div>
 
-        <div className="txMargin">
+        <div className="timeWith">
           <TextField
             required
             value={state.responsible}
             fullWidth={true}
             id="responsible"
+            InputProps={{
+              readOnly: props.userRole === 'admin' ? false : true,
+            }}
             onChange={handleChange}
           />
         </div>
       </div>
       <div className="bttMurgin">
-        <Button variant="contained"
-          color="primary"
-          fullWidth={true}
-          onClick={saveChange}
-        >
-          Сохранить
-        </Button>
+        <NavLink to='/register' style={navLinkStyle}>
+          <Button variant="contained"
+            color="primary"
+            fullWidth={true}
+            onClick={saveChange}
+          >
+            {props.flag === 'newTask' ? 'Создать' : 'Сохранить'}
+          </Button>
+        </NavLink>
       </div>
     </>
   );

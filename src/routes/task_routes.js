@@ -6,10 +6,11 @@ const auth = require("../../middleware/authMiddleware");
 
 router.post('/newtask', auth, taskController.newTask);
 router.get('/getalltask', auth, taskController.getAllTask);
-router.get('/getdaytask', taskController.getDayTask);
+router.get('/getdaytask', auth, taskController.getDayTask);
 router.get('/getweektask', auth, taskController.getWeekTask);
-router.get('/getmonthtask', auth, taskController.getMonthTask);
-router.get('/getmoremonthtask', auth, taskController.getMoreMonthTask);
+router.get('/getmoremonthtask', auth, taskController.getMoreWeekTask);
+router.get('/getupdatedatetask', auth, taskController.getUpdateDateTask);
+router.get('/getresponsibletask', auth, taskController.getResponsibleTask);
 router.patch('/edittask', auth, taskController.editTask);
 router.delete('/task_annihilation', auth, taskController.deleteTask);
 

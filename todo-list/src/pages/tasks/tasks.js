@@ -49,24 +49,13 @@ export default function Tasks(props) {
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    try {
-      const getInfo = async () => {
-        const data = await request('/api/task/getalltask', 'GET', null,
-          { authorization: `Bearer ${token}` });
-        setStateData(data.tasksList ? [...data.tasksList] : null);
-      };
-      getInfo();
-    }
-    catch (e) {
-      console.log(e.message)
-    }
-  }, []);
-
-  useEffect(() => {
     const getInfo = async () => {
-      const data = await request('/api/user/getuserinfo', 'POST', null,
+      const dataTask = await request('/api/task/getalltask', 'GET', null,
         { authorization: `Bearer ${token}` });
-      setUserInfo({ ...data.candidate });
+      setStateData(dataTask.tasksList ? [...dataTask.tasksList] : null);
+      const dataUser = await request('/api/user/getuserinfo', 'POST', null,
+        { authorization: `Bearer ${token}` });
+      setUserInfo({ ...dataUser.candidate });
     };
     getInfo();
   }, []);
@@ -79,6 +68,35 @@ export default function Tasks(props) {
     setToggleState({ ...toggleState, [anchor]: open });
   };
 
+  const changeHandler = async (e) => {
+    console.log(e.target.id);
+    if (e.target.id === 'oneDay') {
+      const data = await request('/api/task/getdaytask', 'GET', null,
+        { authorization: `Bearer ${token}` });
+      setStateData(data.tasksList ? [...data.tasksList] : null);
+    }
+    if (e.target.id === 'oneWeek') {
+      const data = await request('/api/task/getweektask', 'GET', null,
+        { authorization: `Bearer ${token}` });
+      setStateData(data.tasksList ? [...data.tasksList] : null);
+    }
+    if (e.target.id === 'moreWeek') {
+      const data = await request('/api/task/getmoremonthtask', 'GET', null,
+        { authorization: `Bearer ${token}` });
+      setStateData(data.tasksList ? [...data.tasksList] : null);
+    }
+    if (e.target.id === 'updateDate') {
+      const data = await request('/api/task/getupdatedatetask', 'GET', null,
+        { authorization: `Bearer ${token}` });
+      setStateData(data.tasksList ? [...data.tasksList] : null);
+    }
+    if (e.target.id === 'onResponsible') {
+      const data = await request('/api/task/getresponsibletask', 'GET', null,
+        { authorization: `Bearer ${token}` });
+      setStateData(data.tasksList ? [...data.tasksList] : null);
+    }
+  };
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -87,25 +105,9 @@ export default function Tasks(props) {
     setOpen(false);
   };
 
-  const list = (anchor) => (
-    <div
-      className="rightPanel"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {['На день', 'На неделю', 'На месяц', 'На будущее', 'По дате обновления', 'По ответственным'].map((text) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
   const modalBody = (
     <div style={modalStyle} className="paperModal">
-      <TaskModal value={props.task} userRole={props.userRole} />
+      <TaskModal userRole={userInfo.role} flag={"newTask"} />
     </div>
   );
 
@@ -119,27 +121,64 @@ export default function Tasks(props) {
           </Typography>
 
           {userInfo.role === 'admin' ? (
-            <Button color="inherit" onClick={handleOpen} >
-              Создать задачу
-            </Button>
+            <div>
+              <Button color="inherit" onClick={handleOpen} >
+                Создать задачу
+              </Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+              >
+                {modalBody}
+              </Modal>
+            </div>
           ) : ''}
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {modalBody}
-          </Modal>
 
-          {['right'].map((anchor) => (
-            <React.Fragment key={anchor}>
-              <Button color="inherit" onClick={toggleDrawer(anchor, true)}>Фильтры</Button>
-              <Drawer anchor={anchor} open={toggleState[anchor]} onClose={toggleDrawer(anchor, false)}>
-                {list(anchor)}
-              </Drawer>
-            </React.Fragment>
-          ))}
+          <React.Fragment key='right'>
+            <Button color="inherit" onClick={toggleDrawer('right', true)}>Фильтры</Button>
+            <Drawer anchor='right' open={toggleState['right']} onClose={toggleDrawer('right', false)}>
+              <div
+                className="rightPanel"
+                onClick={toggleDrawer('right', false)}
+                onKeyDown={toggleDrawer('right', false)}
+              >
+                <List>
+                  <ListItem button key="На день">
+                    <Button id="oneDay" onClick={changeHandler}>
+                      На день
+                    </Button>
+                  </ListItem>
+
+                  <ListItem button key="На неделю">
+                    <Button id="oneWeek" onClick={changeHandler}>
+                      <ListItemText primary="На неделю" />
+                    </Button>
+                  </ListItem>
+
+                  <ListItem button key="Больше чем на неделю">
+                    <Button id="moreWeek" onClick={changeHandler}>
+                      <ListItemText primary="Больше чем на неделю" />
+                    </Button>
+                  </ListItem>
+
+                  <ListItem button key="По дате обновления">
+                    <Button id="updateDate" onClick={changeHandler}>
+                      <ListItemText primary="По дате обновления" />
+                    </Button>
+                  </ListItem>
+
+                  <ListItem button key="По ответственным">
+                    <Button id="onResponsible" onClick={changeHandler}>
+                      <ListItemText primary="По ответственным" />
+                    </Button>
+                  </ListItem>
+
+                </List>
+              </div>
+            </Drawer>
+          </React.Fragment>
 
           <NavLink to='/lk' style={navLinkStyle}>
             <IconButton

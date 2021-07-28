@@ -4,12 +4,6 @@
   justify-content: space-between;
 }
 
-.dropDownList {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .textPosition {
   display: flex;
   align-items: baseline;
@@ -25,17 +19,9 @@
 
 .textFiledPosition {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
-  width: -webkit-fill-available;
-}
-
-.tyMargin {
-  margin: 5px;
-}
-
-.txMargin {
-  margin-left: 5px;
+  flex-direction: column;
   width: -webkit-fill-available;
 }
 
@@ -45,7 +31,7 @@
 
 .formSelect {
   margin: 8px;
-  width: 300px;
+  width: 250px;
 }
 
 .bttMurgin {
@@ -57,4 +43,8 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.timeWith {
+  width: 250px;
 }

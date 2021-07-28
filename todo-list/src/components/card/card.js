@@ -28,9 +28,7 @@ export default function OneCard(props) {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({})
 
-
   useEffect(() => { setState(props.task); }, []);
-
 
   const handleOpen = () => {
     setOpen(true);
@@ -46,6 +44,8 @@ export default function OneCard(props) {
     </div>
   );
 
+  const timestamp = props.task.expiration_date.split("T")[0].split("-");
+
   return (
     <div className="cardsLocation">
       <Card className="rootCard">
@@ -60,7 +60,7 @@ export default function OneCard(props) {
           </Typography>
 
           <Typography variant="inherit" component="p">
-            Дата окончания: {new Date(props.task.expiration_date).toLocaleString('ru-RU', { day: 'numeric', month: 'numeric', year: 'numeric' })}
+            Дата окончания: {`${timestamp[2]}.${timestamp[1]}.${timestamp[0]}`}
           </Typography>
 
           <Typography variant="inherit" component="p">

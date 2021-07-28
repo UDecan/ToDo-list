@@ -161,7 +161,7 @@ async function editUser(req, res) {
 };
 
 async function deleteUser(req, res) { // ???
-  const { login } = req.query;
+  const { login } = req.body;
 
   const candidate = await db("user_data")
     .where({ login })

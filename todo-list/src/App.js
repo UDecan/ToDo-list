@@ -4,7 +4,6 @@ import { useAuth } from './hooks/authHook';
 import { AuthContext } from './context/AuthContext';
 import { Loader } from './components/loader/loader';
 
-import 'materialize-css';
 import './App.scss';
 
 function App() {

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon ./src/index.js",
-    "start": "concurrently \"cd ./todo-list && npm run start\" \"npm run server\""
+    "start": "nodemon ./src/index.js",
+    "localstart": "concurrently \"cd ./todo-list && npm run start\" \"npm run server\"",
+    "build": "cd ./todo-list && npm i && npm run build"
   },
   "repository": {
     "type": "git",

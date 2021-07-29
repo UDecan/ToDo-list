@@ -3,6 +3,7 @@ const config = require("config");
 const pg = require("pg");
 const router = require('./routes/index_router');
 const path = require('path')
+const db = require('./db');
 
 
 const app = express();
@@ -13,6 +14,11 @@ app.use(express.json());
 app.use('/api', router);
 
 app.use('/', express.static(path.join(__dirname, '../', 'todo-list', 'build')))
+
+const data = db.raw('SELECT 1').catch(e => {
+  console.error(e.message);
+  process.exit(-1);
+});
 
 app.get('*', (req, res) => {
   console.log(req.url)

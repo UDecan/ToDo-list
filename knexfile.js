@@ -7,7 +7,6 @@ module.exports = {
       password: 'root',
       host: 'localhost',
       port: '5432',
-      database: 'todoDB'
     },
     pool: {
       min: 2,

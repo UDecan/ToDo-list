@@ -1,0 +1,5 @@
+{
+  "staticSalt": 3301,
+  "port": 5000,
+  "jwtsecret": "not a secret at all"
+}

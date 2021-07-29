@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./src/index.js",
     "localstart": "concurrently \"cd ./todo-list && npm run start\" \"npm run server\"",
-    "build": "knex migrate:latest && knex seed:run --specific=user.js && knex seed:run --specific=task.js && cd ./todo-list && npm i && npm run build"
+    "build": "knex migrate:rollback && knex migrate:latest && knex seed:run --specific=user.js && knex seed:run --specific=task.js && cd ./todo-list && npm i && npm run build"
   },
   "repository": {
     "type": "git",

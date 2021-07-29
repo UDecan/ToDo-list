@@ -191,6 +191,7 @@ class TaskController {
     }
 
     const tasksList = await db('tasks')
+      .where({ responsible: login })
       .orderBy('update_date', 'desc')
       .select();
 
@@ -222,6 +223,7 @@ class TaskController {
     }
 
     const tasksList = await db('tasks')
+      .where({ responsible: login })
       .orderBy('responsible', 'desc')
       .whereNotNull('responsible')
       .select();
@@ -289,24 +291,6 @@ class TaskController {
       });
     }
   };
-
-  async deleteTask(req, res) {
-    const { login, role } = req.user;
-    const { id } = req.body;
-
-    if (role === 'admin') {
-      const tasksList = await db('tasks')
-        .where({
-          the_creator: login,
-          id
-        })
-        .del();
-
-      res.status(200).json({
-        message: tasksList
-      });
-    };
-  }
 };
 
 

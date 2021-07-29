@@ -167,16 +167,4 @@ async function editUser(req, res) {
   }
 };
 
-async function deleteUser(req, res) { // ???
-  const { login } = req.body;
-
-  const candidate = await db("user_data")
-    .where({ login })
-    .del();
-
-  res.status(200).json({
-    message: candidate,
-  });
-};
-
-module.exports = { registerUser, authorizeUser, editUser, deleteUser, getUserInfo };
+module.exports = { registerUser, authorizeUser, editUser, getUserInfo };

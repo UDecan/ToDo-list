@@ -12,8 +12,6 @@ router.get('/getmoremonthtask', auth, taskController.getMoreWeekTask);
 router.get('/getupdatedatetask', auth, taskController.getUpdateDateTask);
 router.get('/getresponsibletask', auth, taskController.getResponsibleTask);
 router.patch('/edittask', auth, taskController.editTask);
-router.delete('/task_annihilation', auth, taskController.deleteTask);
-
 
 
 module.exports = router;

@@ -13,31 +13,35 @@ class TaskController {
       responsible
     } = req.body;
 
-    //try {
-    if (role === 'admin') {
+    try {
+      if (role === 'admin') {
+        const responsibleLogin = (await db('user_data').where({ leader: login, login: responsible }).select())[0];
+        if (!responsibleLogin) {
+          return res.status(400).json({ message: "Вы не являетесь руководителем этого пользователя" });
+        }
 
-      const newTask = await db("tasks")
-        .insert({
-          heading,
-          description,
-          expiration_date,
-          date_of_creation: new Date(Date.now()).toISOString(),
-          priority,
-          status: 'к выполнению',
-          the_creator: login,
-          responsible
-        });
+        const newTask = await db("tasks")
+          .insert({
+            heading,
+            description,
+            expiration_date,
+            date_of_creation: new Date(Date.now()).toISOString(),
+            priority,
+            status: 'к выполнению',
+            the_creator: login,
+            responsible
+          });
 
-      return res.status(200).json({ message: newTask });
-    };
+        return res.status(200).json({ message: "Задача успешно создана" });
+      };
 
-    return res.status(500).json({ message: "Недостаточно прав" });
-    // }
-    // catch {
-    //   return res.status(500).json({
-    //     message: "Непредвиденная ошибка!"
-    //   });
-    // }
+      return res.status(400).json({ message: "Недостаточно прав" });
+    }
+    catch {
+      return res.status(400).json({
+        message: "Непредвиденная ошибка!"
+      });
+    }
   };
 
   async getAllTask(req, res) {
@@ -176,7 +180,6 @@ class TaskController {
       const tasksList = await db('tasks')
         .where({ the_creator: login })
         .orderBy('update_date', 'desc')
-        .whereNotNull('update_date')
         .select();
       if (!tasksList[0]) {
         return res.status(200).json({
@@ -189,7 +192,6 @@ class TaskController {
 
     const tasksList = await db('tasks')
       .orderBy('update_date', 'desc')
-      .whereNotNull('update_date')
       .select();
 
     if (!tasksList[0]) {
@@ -248,44 +250,44 @@ class TaskController {
 
     const candidate = (await db('user_data').where({ login: responsible }).select())[0];
     if (!candidate) {
-      return res.status(500).json({
+      return res.status(400).json({
         message: "Пользователя с таким логином не существует"
       });
     };
 
-    // try {
-    if (role === 'admin') {
+    try {
+      if (role === 'admin') {
+
+        const responseData = await db("tasks")
+          .where({ id })
+          .update({
+            heading,
+            description,
+            expiration_date,
+            date_of_creation,
+            update_date: new Date(Date.now()).toISOString(),
+            priority,
+            status,
+            responsible
+          });
+
+        return res.status(200).json({ message: "Задача успешно изменена!" });
+      };
 
       const responseData = await db("tasks")
         .where({ id })
         .update({
-          heading,
-          description,
-          expiration_date,
-          date_of_creation,
-          update_date: new Date(Date.now()).toISOString(),
-          priority,
           status,
-          responsible
+          update_date: new Date(Date.now()).toISOString()
         });
 
-      return res.status(200).json({ message: responseData });
-    };
-
-    const responseData = await db("tasks")
-      .where({ id })
-      .update({
-        status,
-        update_date: new Date(Date.now()).toISOString()
+      return res.status(200).json({ message: "Задача успешно изменена!" });
+    }
+    catch {
+      return res.status(400).json({
+        message: "Непредвиденная ошибка!"
       });
-
-    return res.status(200).json({ message: responseData });
-    // }
-    // catch {
-    //   return res.status(500).json({
-    //     message: "Непредвиденная ошибка!"
-    //   });
-    // }
+    }
   };
 
   async deleteTask(req, res) {

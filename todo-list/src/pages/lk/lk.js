@@ -5,8 +5,10 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  TextField
+  TextField,
+  Snackbar
 } from "@material-ui/core";
+import Alert from '../../components/alert/alert';
 import { NavLink } from "react-router-dom";
 import { AccountCircle } from '@material-ui/icons';
 import { AuthContext } from '../../context/AuthContext'
@@ -29,17 +31,33 @@ export default function Lk(props) {
     login: "",
     leader: ""
   });
-  const { request } = useHttp();
+  const { request, error, clearError } = useHttp();
   const auth = useContext(AuthContext);
   const { token } = useContext(AuthContext);
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSuccess(false);
+    setOpenError(false);
+    clearError();
+  };
 
   useEffect(() => {
-    const getInfo = async () => {
-      const data = await request('/api/user/getuserinfo', 'POST', null,
-        { authorization: `Bearer ${token}` });
-      setState({ ...data.candidate });
-    };
-    getInfo();
+    try {
+      const getInfo = async () => {
+        const data = await request('/api/user/getuserinfo', 'POST', null,
+          { authorization: `Bearer ${token}` });
+        setState({ ...data.candidate });
+      };
+      getInfo();
+    }
+    catch { }
   }, []);
 
   const changeHandler = (e) => {
@@ -57,8 +75,16 @@ export default function Lk(props) {
   };
 
   const saveChange = async (e) => {
-    const data = await request('/api/user/edit', 'PATCH', { ...state },
-      { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+    try {
+      const data = await request('/api/user/edit', 'PATCH', { ...state },
+        { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+      setMessage(data.message);
+      setOpenSuccess(true);
+    }
+    catch {
+      setMessage(error);
+      setOpenError(true);
+    }
   }
 
   return (
@@ -160,6 +186,18 @@ export default function Lk(props) {
                 Сохранить
               </Button>
             </NavLink>
+
+            <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity="error">
+                {message}
+              </Alert>
+            </Snackbar>
+
+            <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity="success">
+                {message}
+              </Alert>
+            </Snackbar>
           </div>
         </div>
       </form>

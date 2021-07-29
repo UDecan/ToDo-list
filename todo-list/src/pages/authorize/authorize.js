@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   Button,
   Input,
   InputLabel,
   FormControl,
   Typography,
+  Snackbar
 } from "@material-ui/core";
+import Alert from '../../components/alert/alert';
 import { NavLink } from "react-router-dom";
 import { useHttp } from "../../hooks/httpHook";
 import { AuthContext } from "../../context/AuthContext";
@@ -24,6 +26,16 @@ export default function Authorize(props) {
     login: '',
     password: '',
   });
+  const [open, setOpen] = useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+    clearError();
+  };
 
   const changeHandler = (e) => {
     setForm({
@@ -32,16 +44,14 @@ export default function Authorize(props) {
     })
   }
 
-  /*useEffect(() => {
-    message(error);
-    clearError();
-  }, [error, message, clearError]);*/
-
   const authorizeHandler = async () => {
     try {
       const data = await request('/api/user/authorize', 'POST', { ...form });
       auth.login(data.token, data.userLogin);
-    } catch (e) { }
+    }
+    catch {
+      setOpen(true);
+    }
   }
 
   return (
@@ -86,6 +96,12 @@ export default function Authorize(props) {
             Войти
           </Button>
         </div>
+
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            {error}
+          </Alert>
+        </Snackbar>
 
         <div className="buttons">
           <NavLink to='/register' style={navLinkStyle}>

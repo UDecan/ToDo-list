@@ -27,7 +27,7 @@ module.exports.middleware = (req, res, next) => {
     if (validate(login)) {
       return next();
     } else {
-      return res.status(500).json(new Error("Validation error: invalid login"));
+      return res.status(400).json(new Error("Validation error: invalid login"));
     }
   } else {
     return res

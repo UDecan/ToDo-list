@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   Typography,
   MenuItem,
@@ -58,14 +58,17 @@ export default function TaskModal(props) {
   };
 
   const saveChange = async (e) => {
-    if (props.flag === 'newTask') {
-      const data = await request('/api/task/newtask', 'POST', { ...state },
-        { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+    try {
+      if (props.flag === 'newTask') {
+        await request('/api/task/newtask', 'POST', { ...state },
+          { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+      }
+      else {
+        await request('/api/task/edittask', 'PATCH', { ...state },
+          { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
+      }
     }
-    else {
-      const data = await request('/api/task/edittask', 'PATCH', { ...state },
-        { authorization: `Bearer ${token}`, "Content-Type": 'application/json' });
-    }
+    catch { }
   }
 
   return (

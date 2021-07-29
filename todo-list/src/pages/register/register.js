@@ -5,8 +5,10 @@ import {
   InputLabel,
   FormControl,
   Typography,
+  Snackbar
 } from "@material-ui/core";
-import {NavLink} from "react-router-dom";
+import Alert from '../../components/alert/alert';
+import { NavLink } from "react-router-dom";
 import validateLogin from '../../validators/login';
 import validatePassword from '../../validators/password';
 import AdditionalInfo from "../../additionalInfo/additionalInfo";
@@ -21,7 +23,7 @@ const navLinkStyle = {
 }
 
 export default function Register(props) {
-  const { loading, request } = useHttp();
+  const { request, error, clearError } = useHttp();
   const [state, setState] = useState({
     name: "",
     surname: "",
@@ -31,6 +33,19 @@ export default function Register(props) {
     passwordConf: "",
     leader: ""
   });
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSuccess(false);
+    setOpenError(false);
+    clearError();
+  };
 
   const alertLogin = !validateLogin(state.login) && state.login !== "";
   const alertPassword = !validatePassword(state.password) && state.password !== "";
@@ -46,8 +61,12 @@ export default function Register(props) {
   const registerHandler = async () => {
     try {
       const data = await request('/api/user/register', 'POST', { ...state });
-    } catch (e) {
-
+      setMessage(data.message);
+      setOpenSuccess(true);
+    }
+    catch {
+      setMessage(error);
+      setOpenError(true);
     }
   }
 
@@ -150,7 +169,7 @@ export default function Register(props) {
           <InputLabel htmlFor="leader">Руководитель (необязательно)</InputLabel>
           <Input
             className="form_control"
-            type="password"
+            type="text"
             name="leader"
             id="leader"
             placeholder="Логин руководителя"
@@ -164,11 +183,24 @@ export default function Register(props) {
             color="primary"
             fullWidth={true}
             onClick={registerHandler}
-            disabled={alertLogin || alertPassword || alertPasswordConf || state.name === "" || state.surname === ""}
+            disabled={alertLogin || alertPassword || alertPasswordConf || state.name === "" || state.surname === "" || state.login === "" || state.password === "" || state.passwordConf === ""}
           >
             Зарегистрироваться
           </Button>
+
+          <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              {message}
+            </Alert>
+          </Snackbar>
+
+          <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success">
+              {message}
+            </Alert>
+          </Snackbar>
         </div>
+
         <div className="buttons">
           <NavLink to='/authorize' style={navLinkStyle}>
             <Button fullWidth={true}>

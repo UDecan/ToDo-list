@@ -25,7 +25,7 @@ async function getUserInfo(req, res) {
 
 
   if (!candidate) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Непредвиденная ошибка!"
     });
   }
@@ -37,12 +37,12 @@ async function registerUser(req, res) {
   const { name, surname, middle_name, login, password, leader } = req.body;
 
   if (!!login && !validators.login(login)) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Неверный логин"
     });
   }
   if (!!password && !validators.password(password)) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Неверный пароль"
     });
   }
@@ -51,7 +51,7 @@ async function registerUser(req, res) {
 
 
   if (candidate) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Пользователь с таким логином уже существует"
     });
   }
@@ -59,8 +59,8 @@ async function registerUser(req, res) {
   const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
 
 
-  if (!!leader && !leaderLogin && leaderLogin.role !== 'admin') {
-    return res.status(500).json({
+  if (!!leader && !leaderLogin && leaderLogin?.role !== 'admin') {
+    return res.status(400).json({
       message: "Руководителя с таким логином не существует"
     });
   }
@@ -77,7 +77,7 @@ async function registerUser(req, res) {
     leader
   })
 
-  res.status(200).json({ newUser });
+  res.status(200).json({ message: "Пользователь успешно зарегистрирован!" });
 };
 
 async function authorizeUser(req, res) {
@@ -87,7 +87,7 @@ async function authorizeUser(req, res) {
   )[0];
 
   if (!candidate) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Пользователь c таким логином не зарегистрирован"
     });
   }
@@ -112,7 +112,7 @@ async function authorizeUser(req, res) {
     return res.status(200).json({ token, login });
   }
   else {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Неверно введен пароль"
     });
   }
@@ -124,8 +124,8 @@ async function editUser(req, res) {
 
   const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
 
-  if (!!leader && !leaderLogin || leaderLogin.role !== 'admin') {
-    return res.status(500).json({
+  if (!!leader && !leaderLogin || leaderLogin?.role !== 'admin') {
+    return res.status(400).json({
       message: "Руководителя с таким логином не существует"
     });
   }
@@ -134,7 +134,7 @@ async function editUser(req, res) {
 
 
   if (!candidate) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Непредвиденная ошибка!"
     });
   }
@@ -149,12 +149,10 @@ async function editUser(req, res) {
         leader
       });
 
-    res.status(200).json({
-      message: responseData,
-    });
+    res.status(200).json({ message: "Пользователь успешно изменен!" });
   }
   catch {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Непредвиденная ошибка!"
     });
   }

@@ -1,17 +1,17 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Typography,
   CardContent,
   Card,
   CardActions,
-  Modal
+  Modal,
 } from "@material-ui/core";
 import TaskModal from "../taskModal/taskModal";
 
 import "./card.scss";
 
-function getModalStyle() {
+const getModalStyle = () => {
   const top = 50;
   const left = 50;
 
@@ -27,6 +27,7 @@ export default function OneCard(props) {
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({})
+  const timestamp = props.task.expiration_date.split("T")[0];
 
   useEffect(() => { setState(props.task); }, []);
 
@@ -44,7 +45,19 @@ export default function OneCard(props) {
     </div>
   );
 
-  const timestamp = props.task.expiration_date.split("T")[0].split("-");
+  const colorHeader = () => {
+    if (state.status === 'выполнена' || state.status === 'отменена') {
+      return 'completedTask';
+    };
+
+    if ((state.status === 'выполняется' || state.status === 'к выполнению') && timestamp < new Date().toJSON().slice(0, 10)) {
+      return 'unfinishedTask';
+    }
+
+    return 'otherTask';
+  };
+
+  const date = props.task.expiration_date.split("T")[0].split("-");
 
   return (
     <div className="cardsLocation">
@@ -52,7 +65,9 @@ export default function OneCard(props) {
         <CardContent className="MuiCard-root">
 
           <Typography variant="h5" component="h2">
-            {props.task.heading}
+            <div className={colorHeader()}>
+              {props.task.heading}
+            </div>
           </Typography>
 
           <Typography variant="inherit" component="p">
@@ -60,7 +75,7 @@ export default function OneCard(props) {
           </Typography>
 
           <Typography variant="inherit" component="p">
-            Дата окончания: {`${timestamp[2]}.${timestamp[1]}.${timestamp[0]}`}
+            Дата окончания: {`${date[2]}.${date[1]}.${date[0]}`}
           </Typography>
 
           <Typography variant="inherit" component="p">

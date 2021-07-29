@@ -81,17 +81,27 @@ async function registerUser(req, res) {
 };
 
 async function authorizeUser(req, res) {
-  let { login, password } = req.body;
-  console.log('1');
-  const candidate = (
-    await db('user_data').where({ login }).select()
-  )[0];
-  console.log('2');
-  if (!candidate) {
-    return res.status(400).json({
-      message: "Пользователь c таким логином не зарегистрирован"
+  try {
+    const { login, password } = req.body;
+
+    const candidate = (
+      await db('user_data').where({ login }).select()
+    )[0];
+
+    if (!candidate) {
+      return res.status(400).json({
+        message: "Пользователь c таким логином не зарегистрирован"
+      });
+    }
+  }
+  catch (e) {
+    console.error(e.message);
+    return res.status(500).json({
+      message: e.message
     });
   }
+
+
 
   const saltpwd = password + config.staticSalt;
 

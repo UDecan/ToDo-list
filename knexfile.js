@@ -17,27 +17,10 @@ module.exports = {
     }
   },
 
-  staging: {
-    client: 'postgresql',
-    connection: {
-      database: 'todoDB',
-      user: 'postgres',
-      password: 'root',
-      port: '5432'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  },
-
   production: {
     client: 'postgresql',
     connection: {
-      connectionString: `${process.env.DATABASE_URL}?ssl=true`,
+      connectionString: process.env.DATABASE_URL,
       ssl: {
         rejectUnauthorized: false,
       }

@@ -15,10 +15,7 @@ app.use('/api', router);
 
 app.use('/', express.static(path.join(__dirname, '../', 'todo-list', 'build')))
 
-const data = db.raw('SELECT 1').catch(e => {
-  console.error(e.message);
-  process.exit(-1);
-});
+
 
 app.get('*', (req, res) => {
   console.log(req.url)

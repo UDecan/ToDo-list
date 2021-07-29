@@ -93,38 +93,36 @@ async function authorizeUser(req, res) {
         message: "Пользователь c таким логином не зарегистрирован"
       });
     }
+
+    const saltpwd = password + config.staticSalt;
+
+    const match = await argon.verify(candidate.password, saltpwd);
+
+    if (match) {
+      const token = await jwt.sign(
+        {
+          login,
+          role: candidate.role,
+          leader: candidate.leader
+        },
+        config.jwtsecret,
+        {
+          expiresIn: "1h",
+        }
+      );
+
+      return res.status(200).json({ token, login });
+    }
+    else {
+      return res.status(400).json({
+        message: "Неверно введен пароль"
+      });
+    }
   }
   catch (e) {
     console.error(e.message);
     return res.status(500).json({
       message: e.message
-    });
-  }
-
-
-
-  const saltpwd = password + config.staticSalt;
-
-  const match = await argon.verify(candidate.password, saltpwd);
-
-  if (match) {
-    const token = await jwt.sign(
-      {
-        login,
-        role: candidate.role,
-        leader: candidate.leader
-      },
-      config.jwtsecret,
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    return res.status(200).json({ token, login });
-  }
-  else {
-    return res.status(400).json({
-      message: "Неверно введен пароль"
     });
   }
 };

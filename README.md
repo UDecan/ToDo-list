@@ -1,5 +1,18 @@
 # Что это?
  - Тестовое задание для E-soft - ToDo-list
+# Используемые технологии:
+ - backend Node.js:<br>
+  `pg - PostgreSQL база данных`<br>
+	`argon2 - для шифрование паролей`<br>
+	`express - фреймворк web-приложений для Node.js`<br>
+	`jsonwebtoken - для сохранения авторизации`<br>
+	`knex - для работы с БД`<br>
+	`nodemon - для удобства при разработке`<br>
+	`config - для хранения значений`<br>
+	`concurrently - для удобного запуска`<br>
+ - frontend React:<br>
+	`material-ui - для быстрой работы с фронтендом`<br>
+	`react-router-dom - для навигации по сайту`
 # Как этим пользоваться?
  - Клонируем репозиторий:<br>
  	`git clone https://github.com/UDecan/ToDo-list.git`

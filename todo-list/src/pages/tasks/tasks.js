@@ -147,7 +147,11 @@ export default function Tasks(props) {
             <MenuItem id="oneDay" onClick={changeHandler}>На день</MenuItem>
             <MenuItem id="oneWeek" onClick={changeHandler}>На неделю</MenuItem>
             <MenuItem id="moreWeek" onClick={changeHandler}>На будущее</MenuItem>
-            <MenuItem id="onResponsible" onClick={changeHandler}>По ответственным</MenuItem>
+            {userInfo.role === 'admin' ?
+              (
+                <MenuItem id="onResponsible" onClick={changeHandler}>По ответственным</MenuItem>
+              ) : ''
+            }
             <MenuItem id="updateDate" onClick={changeHandler}>Без группировок</MenuItem>
           </Menu>
 

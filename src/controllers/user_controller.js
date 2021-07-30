@@ -59,7 +59,7 @@ async function registerUser(req, res) {
   const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
 
 
-  if (!!leader && !leaderLogin && leaderLogin?.role !== 'admin') {
+  if (!!leader && leaderLogin?.role !== 'admin') {
     return res.status(400).json({
       message: "Руководителя с таким логином не существует"
     });

@@ -19,65 +19,81 @@ async function hashPassword(password) {
 };
 
 async function getUserInfo(req, res) {
-  const { login } = req.user;
+  try {
+    const { login } = req.user;
 
-  const candidate = (await db('user_data').where({ login }).select())[0];
+    const candidate = (await db('user_data').where({ login }).select())[0];
 
 
-  if (!candidate) {
-    return res.status(400).json({
-      message: "Непредвиденная ошибка!"
+    if (!candidate) {
+      return res.status(400).json({
+        message: "Непредвиденная ошибка!"
+      });
+    }
+
+    res.status(200).json({ candidate });
+  }
+  catch (e) {
+    console.error(e.message);
+    return res.status(500).json({
+      message: e.message
     });
   }
-
-  res.status(200).json({ candidate });
 }
 
 async function registerUser(req, res) {
-  const { name, surname, middle_name, login, password, leader } = req.body;
+  try {
+    const { name, surname, middle_name, login, password, leader } = req.body;
 
-  if (!!login && !validators.login(login)) {
-    return res.status(400).json({
-      message: "Неверный логин"
+    if (!!login && !validators.login(login)) {
+      return res.status(400).json({
+        message: "Неверный логин"
+      });
+    }
+    if (!!password && !validators.password(password)) {
+      return res.status(400).json({
+        message: "Неверный пароль"
+      });
+    }
+
+    const candidate = (await db('user_data').where({ login }).select())[0];
+
+
+    if (candidate) {
+      return res.status(400).json({
+        message: "Пользователь с таким логином уже существует"
+      });
+    }
+
+    const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
+
+
+    if (!!leader && leaderLogin?.role !== 'admin') {
+      return res.status(400).json({
+        message: "Руководителя с таким логином не существует"
+      });
+    }
+
+    const hashPwd = await hashPassword(password);
+
+    const newUser = await db('user_data').insert({
+      name,
+      surname,
+      middle_name,
+      login,
+      password: hashPwd,
+      role: `user`,
+      leader
+    })
+
+    res.status(200).json({ message: "Пользователь успешно зарегистрирован!" });
+  }
+  catch (e) {
+    console.error(e.message);
+    return res.status(500).json({
+      message: e.message
     });
   }
-  if (!!password && !validators.password(password)) {
-    return res.status(400).json({
-      message: "Неверный пароль"
-    });
-  }
-
-  const candidate = (await db('user_data').where({ login }).select())[0];
-
-
-  if (candidate) {
-    return res.status(400).json({
-      message: "Пользователь с таким логином уже существует"
-    });
-  }
-
-  const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
-
-
-  if (!!leader && leaderLogin?.role !== 'admin') {
-    return res.status(400).json({
-      message: "Руководителя с таким логином не существует"
-    });
-  }
-
-  const hashPwd = await hashPassword(password);
-
-  const newUser = await db('user_data').insert({
-    name,
-    surname,
-    middle_name,
-    login,
-    password: hashPwd,
-    role: `user`,
-    leader
-  })
-
-  res.status(200).json({ message: "Пользователь успешно зарегистрирован!" });
 };
 
 async function authorizeUser(req, res) {
@@ -128,27 +144,27 @@ async function authorizeUser(req, res) {
 };
 
 async function editUser(req, res) {
-  const { login } = req.user;
-  const { leader, name, surname, middle_name } = req.body;
-
-  const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
-
-  if (!!leader && leaderLogin?.role !== 'admin') {
-    return res.status(400).json({
-      message: "Руководителя с таким логином не существует"
-    });
-  }
-
-  const candidate = (await db('user_data').where({ login }).select())[0];
-
-
-  if (!candidate) {
-    return res.status(400).json({
-      message: "Непредвиденная ошибка!"
-    });
-  }
-
   try {
+    const { login } = req.user;
+    const { leader, name, surname, middle_name } = req.body;
+
+    const leaderLogin = (await db('user_data').where({ login: leader }).select())[0];
+
+    if (!!leader && leaderLogin?.role !== 'admin') {
+      return res.status(400).json({
+        message: "Руководителя с таким логином не существует"
+      });
+    }
+
+    const candidate = (await db('user_data').where({ login }).select())[0];
+
+
+    if (!candidate) {
+      return res.status(400).json({
+        message: "Непредвиденная ошибка!"
+      });
+    }
+
     const responseData = await db("user_data")
       .where({ login })
       .update({
@@ -160,9 +176,10 @@ async function editUser(req, res) {
 
     res.status(200).json({ message: "Пользователь успешно изменен!" });
   }
-  catch {
-    return res.status(400).json({
-      message: "Непредвиденная ошибка!"
+  catch (e) {
+    console.error(e.message);
+    return res.status(500).json({
+      message: e.message
     });
   }
 };

@@ -34,6 +34,7 @@ export default function TaskModal(props) {
 
   const { token } = useContext(AuthContext);
   const { request } = useHttp();
+  const ifAdmin = props.userRole === 'admin' ? false : true;
 
   const handleChange = (e) => {
     setState({
@@ -87,7 +88,7 @@ export default function TaskModal(props) {
           multiline
           rowsMax={4}
           InputProps={{
-            readOnly: props.userRole === 'admin' ? false : true,
+            readOnly: ifAdmin,
           }}
           id="heading"
           onChange={handleChange}
@@ -109,7 +110,7 @@ export default function TaskModal(props) {
           multiline
           rowsMax={4}
           InputProps={{
-            readOnly: props.userRole === 'admin' ? false : true,
+            readOnly: ifAdmin,
           }}
           id="description"
           onChange={handleChange}
@@ -131,7 +132,7 @@ export default function TaskModal(props) {
             shrink: true,
           }}
           InputProps={{
-            readOnly: props.userRole === 'admin' ? false : true,
+            readOnly: ifAdmin,
           }}
           onChange={handleChange}
         />
@@ -179,7 +180,7 @@ export default function TaskModal(props) {
                 shrink: true,
               }}
               InputProps={{
-                readOnly: props.userRole === 'admin' ? false : true,
+                readOnly: ifAdmin,
               }}
               onChange={handleChange}
             />
@@ -198,7 +199,7 @@ export default function TaskModal(props) {
             id="priority"
             value={state.priority}
             onChange={priorityHandler}
-            onOpen={props.userRole === 'admin' ? false : true}
+            onOpen={ifAdmin}
           >
             <MenuItem value={"высокий"}>высокий</MenuItem>
             <MenuItem value={"средний"}>средний</MenuItem>
@@ -245,7 +246,7 @@ export default function TaskModal(props) {
               fullWidth={true}
               id="the_creator"
               InputProps={{
-                readOnly: props.userRole === 'admin' ? false : true,
+                readOnly: ifAdmin,
               }}
             />
           </div>
@@ -267,7 +268,7 @@ export default function TaskModal(props) {
             fullWidth={true}
             id="responsible"
             InputProps={{
-              readOnly: props.userRole === 'admin' ? false : true,
+              readOnly: ifAdmin,
             }}
             onChange={handleChange}
           />

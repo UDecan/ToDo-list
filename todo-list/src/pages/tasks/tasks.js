@@ -23,19 +23,7 @@ const navLinkStyle = {
   textDecoration: "none"
 }
 
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
 export default function Tasks(props) {
-  const [modalStyle] = useState(getModalStyle);
   const [stateData, setStateData] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [open, setOpen] = useState(false);
@@ -65,34 +53,14 @@ export default function Tasks(props) {
 
   const changeHandler = async (e) => {
     try {
-      if (e.target.id === 'oneDay') {
-        const data = await request('/api/task/getdaytask', 'GET', null,
-          { authorization: `Bearer ${token}` });
-        setStateData(data.tasksList ? [...data.tasksList] : null);
-      }
-      if (e.target.id === 'oneWeek') {
-        const data = await request('/api/task/getweektask', 'GET', null,
-          { authorization: `Bearer ${token}` });
-        setStateData(data.tasksList ? [...data.tasksList] : null);
-      }
-      if (e.target.id === 'moreWeek') {
-        const data = await request('/api/task/getmoremonthtask', 'GET', null,
-          { authorization: `Bearer ${token}` });
-        setStateData(data.tasksList ? [...data.tasksList] : null);
-      }
-      if (e.target.id === 'updateDate') {
-        const data = await request('/api/task/getupdatedatetask', 'GET', null,
-          { authorization: `Bearer ${token}` });
-        setStateData(data.tasksList ? [...data.tasksList] : null);
-      }
-      if (e.target.id === 'onResponsible') {
-        const data = await request('/api/task/getresponsibletask', 'GET', null,
-          { authorization: `Bearer ${token}` });
-        setStateData(data.tasksList ? [...data.tasksList] : null);
-      }
+      const data = await request(`/api/task/${e.target.id}`, 'GET', null,
+        { authorization: `Bearer ${token}` });
+      setStateData(data.tasksList ? [...data.tasksList] : null);
       setAnchorEl(null);
     }
-    catch { }
+    catch {
+      setAnchorEl(null);
+    }
   };
 
   const handleOpen = () => {
@@ -104,7 +72,7 @@ export default function Tasks(props) {
   };
 
   const modalBody = (
-    <div style={modalStyle} className="paperModal">
+    <div className="paperModal taskModalPosition">
       <TaskModal userRole={userInfo.role} flag={"newTask"} />
     </div>
   );
@@ -144,15 +112,15 @@ export default function Tasks(props) {
             open={Boolean(anchorEl)}
             onClose={changeHandler}
           >
-            <MenuItem id="oneDay" onClick={changeHandler}>На день</MenuItem>
-            <MenuItem id="oneWeek" onClick={changeHandler}>На неделю</MenuItem>
-            <MenuItem id="moreWeek" onClick={changeHandler}>На будущее</MenuItem>
+            <MenuItem id="getdaytask" onClick={changeHandler}>На день</MenuItem>
+            <MenuItem id="getweektask" onClick={changeHandler}>На неделю</MenuItem>
+            <MenuItem id="getmoremonthtask" onClick={changeHandler}>На будущее</MenuItem>
             {userInfo.role === 'admin' ?
               (
-                <MenuItem id="onResponsible" onClick={changeHandler}>По ответственным</MenuItem>
+                <MenuItem id="getresponsibletask" onClick={changeHandler}>По ответственным</MenuItem>
               ) : ''
             }
-            <MenuItem id="updateDate" onClick={changeHandler}>Без группировок</MenuItem>
+            <MenuItem id="getupdatedatetask" onClick={changeHandler}>Без группировок</MenuItem>
           </Menu>
 
           <NavLink to='/lk' style={navLinkStyle}>
@@ -171,15 +139,9 @@ export default function Tasks(props) {
       <div className="cards">
         {
           stateData?.map((item) => {
-            return item ? (<OneCard key={item.id} task={item} userRole={userInfo.role} />)
-              :
-              (
-                <Typography variant="h6" style={{ color: 'black' }}>
-                  Задач нет!
-                </Typography>
-              );
-          }
-          )}
+            return item ? (<OneCard key={item.id} task={item} userRole={userInfo.role} />) : ''
+          })
+        }
       </div>
     </div>
   );

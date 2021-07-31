@@ -47,9 +47,16 @@ export default function Register(props) {
     clearError();
   };
 
-  const alertLogin = !validateLogin(state.login) && state.login !== "";
-  const alertPassword = !validatePassword(state.password) && state.password !== "";
-  const alertPasswordConf = state.password !== state.passwordConf && state.passwordConf !== "";
+  const ifEmptyOrValid = [
+    !validateLogin(state.login) && !!state.login,
+    !validatePassword(state.password) && !!state.password,
+    state.password !== state.passwordConf && !!state.passwordConf,
+    !state.name,
+    !state.surname,
+    !state.login,
+    !state.password,
+    !state.passwordConf
+  ];
 
   const changeHandler = (e) => {
     setState({
@@ -126,7 +133,7 @@ export default function Register(props) {
           />
         </FormControl>
 
-        {alertLogin ?
+        {ifEmptyOrValid[0] ?
           <AdditionalInfo type="hidden" text="Длина от 4 до 32 символов. Использовать только англ. буквы, цифры и '-' '_'." />
           : ''
         }
@@ -143,7 +150,7 @@ export default function Register(props) {
           />
         </FormControl>
 
-        {alertPassword ?
+        {ifEmptyOrValid[1] ?
           <AdditionalInfo type="hidden" text="Длина от 4 до 32 символов. Должен включать как нижний, так и верхний регистр. Должен включать буквы и цифры. Использовать только англ. буквы." />
           : ''
         }
@@ -160,7 +167,7 @@ export default function Register(props) {
           />
         </FormControl>
 
-        {alertPasswordConf ?
+        {ifEmptyOrValid[2] ?
           <AdditionalInfo type="hidden" text="Пароли не совпадают" />
           : ''
         }
@@ -183,7 +190,7 @@ export default function Register(props) {
             color="primary"
             fullWidth={true}
             onClick={registerHandler}
-            disabled={alertLogin || alertPassword || alertPasswordConf || state.name === "" || state.surname === "" || state.login === "" || state.password === "" || state.passwordConf === ""}
+            disabled={ifEmptyOrValid.includes(true)}
           >
             Зарегистрироваться
           </Button>

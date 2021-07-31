@@ -11,20 +11,7 @@ import TaskModal from "../taskModal/taskModal";
 
 import "./card.scss";
 
-const getModalStyle = () => {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
 export default function OneCard(props) {
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({})
   const timestamp = props.task.expiration_date.split("T")[0];
@@ -40,17 +27,17 @@ export default function OneCard(props) {
   };
 
   const modalBody = (
-    <div style={modalStyle} className="paperModal">
+    <div className="paperModal taskModalPosition">
       <TaskModal value={props.task} userRole={props.userRole} />
     </div>
   );
 
   const colorHeader = () => {
-    if (state.status === 'выполнена' || state.status === 'отменена') {
+    if (['выполнена', 'отменена'].includes(state.status)) {
       return 'completedTask';
     };
 
-    if ((state.status === 'выполняется' || state.status === 'к выполнению') && timestamp < new Date().toJSON().slice(0, 10)) {
+    if (['выполняется', 'к выполнению'].includes(state.status) && timestamp < new Date().toJSON().slice(0, 10)) {
       return 'unfinishedTask';
     }
 

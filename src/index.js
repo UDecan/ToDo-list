@@ -18,7 +18,6 @@ app.use('/', express.static(path.join(__dirname, '../', 'todo-list', 'build')))
 
 
 app.get('*', (req, res) => {
-  console.log(req.url)
   res.sendFile(path.resolve(__dirname, '../', 'todo-list', 'build', 'index.html'))
 })
 

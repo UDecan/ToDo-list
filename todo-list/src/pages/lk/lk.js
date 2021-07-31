@@ -142,7 +142,7 @@ export default function Lk(props) {
           />
           <TextField
             label="Отчество"
-            value={state.middle_name ? state.middle_name : ""}
+            value={state.middle_name}
             margin="dense"
             fullWidth={true}
             id="middle_name"
@@ -170,7 +170,7 @@ export default function Lk(props) {
           />
           <TextField
             label="Руководитель"
-            value={state.leader ? state.leader : ""}
+            value={state.leader}
             margin="dense"
             fullWidth={true}
             id="leader"
